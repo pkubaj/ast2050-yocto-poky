@@ -315,6 +315,7 @@ class URITest(unittest.TestCase):
 class FetcherTest(unittest.TestCase):
 
     def setUp(self):
+        self.origdir = os.getcwd()
         self.d = bb.data.init()
         self.tempdir = tempfile.mkdtemp()
         self.dldir = os.path.join(self.tempdir, "download")
@@ -326,6 +327,7 @@ class FetcherTest(unittest.TestCase):
         self.d.setVar("PERSISTENT_DIR", persistdir)
 
     def tearDown(self):
+        os.chdir(self.origdir)
         bb.utils.prunedir(self.tempdir)
 
 class MirrorUriTest(FetcherTest):
@@ -618,8 +620,8 @@ class FetchMethodTest(FetcherTest):
             : "5.0",
         ("xserver-xorg", "http://xorg.freedesktop.org/releases/individual/xserver/xorg-server-1.15.1.tar.bz2", "", "")
             : "1.15.1",
-        # packages with valid REGEX_URI and REGEX
-        ("cups", "http://www.cups.org/software/1.7.2/cups-1.7.2-source.tar.bz2", "http://www.cups.org/software.php", "(?P<name>cups\-)(?P<pver>((\d+[\.\-_]*)+))\-source\.tar\.gz")
+        # packages with valid UPSTREAM_CHECK_URI and UPSTREAM_CHECK_REGEX
+        ("cups", "http://www.cups.org/software/1.7.2/cups-1.7.2-source.tar.bz2", "https://github.com/apple/cups/releases", "(?P<name>cups\-)(?P<pver>((\d+[\.\-_]*)+))\-source\.tar\.gz")
             : "2.0.0",
         ("db", "http://download.oracle.com/berkeley-db/db-5.3.21.tar.gz", "http://www.oracle.com/technetwork/products/berkeleydb/downloads/index-082944.html", "http://download.oracle.com/otn/berkeley-db/(?P<name>db-)(?P<pver>((\d+[\.\-_]*)+))\.tar\.gz")
             : "6.1.19",
